@@ -40,6 +40,10 @@ function UploadProductPage(props) {
 		setContinent(event.target.value);
 	};
 
+	const updateImage = (newImages) => {
+		setImage(newImages);
+	};
+
 	return (
 		<div style={{ maxWidth: '700px', margin: '2rem auto'}}>
 			<div style={{ textAlign: 'center', marginBottom: '2rem'}}>
@@ -48,7 +52,7 @@ function UploadProductPage(props) {
 			</div>
 			<Form action="">
 				{/* DropZone */}
-				<FileUpload/>
+				<FileUpload refreshFnc={updateImage}/>
 				<br/>
 				<br/>
 				<label>이름</label>
@@ -71,7 +75,7 @@ function UploadProductPage(props) {
 				</select>
 				<br/>
 				<br/>
-				<Button>확</Button>
+				<Button>확인</Button>
 
 			</Form>
 		</div>
