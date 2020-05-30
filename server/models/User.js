@@ -33,7 +33,7 @@ const userSchema = mongoose.Schema({
     tokenExp :{
         type: Number
     }
-})
+});
 
 
 userSchema.pre('save', function( next ) {
@@ -46,7 +46,7 @@ userSchema.pre('save', function( next ) {
     
             bcrypt.hash(user.password, salt, function(err, hash){
                 if(err) return next(err);
-                user.password = hash 
+                user.password = hash;
                 next()
             })
         })
@@ -60,20 +60,20 @@ userSchema.methods.comparePassword = function(plainPassword,cb){
         if (err) return cb(err);
         cb(null, isMatch)
     })
-}
+};
 
 userSchema.methods.generateToken = function(cb) {
     var user = this;
-    var token =  jwt.sign(user._id.toHexString(),'secret')
+    var token =  jwt.sign(user._id.toHexString(),'secret');
     var oneHour = moment().add(1, 'hour').valueOf();
 
     user.tokenExp = oneHour;
     user.token = token;
     user.save(function (err, user){
-        if(err) return cb(err)
+        if(err) return cb(err);
         cb(null, user);
     })
-}
+};
 
 userSchema.statics.findByToken = function (token, cb) {
     var user = this;
@@ -84,8 +84,8 @@ userSchema.statics.findByToken = function (token, cb) {
             cb(null, user);
         })
     })
-}
+};
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = { User }
+module.exports = { User };

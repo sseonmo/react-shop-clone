@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const multer  = require('multer');
+const { Product } = require('../models/Product');
 
 
 //=================================
@@ -29,5 +30,19 @@ router.post("/image", (req, res) => {
 		return res.json({ success: true, filePath:res.req.file.path, fileName: res.req.file.filename});
 	});
 });
+
+// 상품저장
+router.post("/", (req, res) => {
+
+	const product = new Product(req.body);
+
+	product.save((err, doc) => {
+		if(err) return res.status(400).json({ success: false, err});
+		res.status(200).json({ success: true, doc});
+	})
+
+});
+
+
 
 module.exports = router;

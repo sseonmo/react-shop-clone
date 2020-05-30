@@ -59,8 +59,8 @@ function FileUpload({refreshFnc}) {
 						<img src={`http://localhost:5000/${image}`} style={{ minWidth: '300px', width: '300px', height: '240px'}} />
 					</div>
 				))}
-
 			</div>
+
 		</div>
 	);
 }

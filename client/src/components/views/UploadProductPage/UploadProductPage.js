@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Typography, Button, Form, Input} from "antd";
 import FileUpload from "../../utils/FileUpload";
+import axios from "axios";
 
 const {Title} = Typography;
 const {TextArea} = Input;
@@ -15,14 +16,14 @@ const Continents = [
 ];
 
 
-function UploadProductPage(props) {
+function UploadProductPage( props) {
 
 	// eslint-disable-next-line no-undef
 	const [Title, setTitle] = useState("");
 	const [Description, setDescription] = useState("");
 	const [Price, setPrice] = useState(0);
 	const [Continent, setContinent] = useState(1);
-	const [Image, setImage] = useState([]);
+	const [Images, setImages] = useState([]);
 
 	const titleChangeHandler = (event) => {
 		setTitle(event.target.value);
@@ -41,7 +42,36 @@ function UploadProductPage(props) {
 	};
 
 	const updateImage = (newImages) => {
-		setImage(newImages);
+		setImages(newImages);
+	};
+
+	const submitHandler = (event) => {
+		event.preventDefault();
+		// if (!Title || !Description || !Price || !Continent || !Images)
+		// 	return alert("모든 값을 넣어주셔야 합니다.");
+
+		// 모든값을 request로 보낸다.
+		const body  = {
+			writer: props.user.userData._id,
+			title: Title,
+			description: Description,
+			price: Price,
+			continent: Continent,
+			images: Images
+		};
+
+		console.log(body);
+		axios.post('/api/product', body)
+			.then(response => {
+				if (response.data.success) {
+					alert('상품업로드에 성공했습니다.');
+					props.history.push('/')
+				} else {
+					alert('상품업로드에 실패했습니다.');
+				}
+			})
+
+
 	};
 
 	return (
@@ -50,7 +80,7 @@ function UploadProductPage(props) {
 				{/*<Title level={2}>여행 상품 업로드</Title>*/}
 				<h2>여행 상품 업로드</h2>
 			</div>
-			<Form action="">
+			<Form onSubmit={submitHandler}>
 				{/* DropZone */}
 				<FileUpload refreshFnc={updateImage}/>
 				<br/>
@@ -75,7 +105,7 @@ function UploadProductPage(props) {
 				</select>
 				<br/>
 				<br/>
-				<Button>확인</Button>
+				<Button htmlType="submit" >확인</Button>
 
 			</Form>
 		</div>
