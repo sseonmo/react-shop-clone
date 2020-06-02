@@ -9,7 +9,7 @@ function ImagesSlider({images}) {
 					<div key={index}>
 						<img
 							src={`http://localhost:5000/${image}`}
-							style={{ width: '100%', maxHeight: '300px'}} />
+							style={{ width: '100%', height: '300px'}} />
 					</div>
 				))}
 			</Carousel>
