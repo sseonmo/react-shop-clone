@@ -50,11 +50,18 @@ router.post("/products", (req, res) => {
 	let findArgs = {};
 	for (let key in req.body.filters) {
 		if (req.body.filters[key].length > 0) {
+
+			if (key === 'price') {
+				findArgs[key] = {
+					$gte: req.body.filters[key][0],
+					$lte: req.body.filters[key][1]
+				};
+			} else {
 				findArgs[key] = req.body.filters[key];
+			}
 		}
 	}
-	// console.log('findArgs', findArgs);
-
+	console.log('findArgs', findArgs);
 	// product collection에 들어잇는 모든 상품 정보를 가져오기
 	// populate를 사용해서 ref에 해당 ObjectId가 속해있는 모델에 해당하는 값과 객체로 치환해주는 역할을 한다.
 	Product.find(findArgs)
