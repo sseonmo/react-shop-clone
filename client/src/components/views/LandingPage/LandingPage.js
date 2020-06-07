@@ -25,7 +25,8 @@ function LandingPage() {
 	useEffect(() => {
 		let body = {
 			skip: Skip,
-			limit: Limit
+			limit: Limit,
+			searchTerm: SearchTerm
 		};
 
 		getProduct(body);
@@ -64,7 +65,8 @@ function LandingPage() {
 		let body = {
 			skip,
 			limit: Limit,
-			loadMore: true
+			loadMore: true,
+			searchTerm: SearchTerm
 		};
 		getProduct(body);
 		setSkip(skip);
@@ -82,7 +84,8 @@ function LandingPage() {
 		let body = {
 			skip: 0,
 			limit: Limit,
-			filters
+			filters,
+			searchTerm: SearchTerm
 		};
 
 		getProduct(body);
@@ -108,7 +111,16 @@ function LandingPage() {
 	};
 
 	const updateSearchTerm = (newSearchTerm) => {
+
+		let body = {
+			skip : 0,
+			limit: Limit,
+			filters: Filter,
+			searchTerm: newSearchTerm
+		};
+		setSkip(0);
 		setSearchTerm(newSearchTerm);
+		getProduct(body)
 	};
 	return (
 		<div style={{width: '75%', margin: '3rem auto'}}>

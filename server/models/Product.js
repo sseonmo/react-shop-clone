@@ -36,6 +36,17 @@ const productSchema = mongoose.Schema({
 	},
 }, {timestamp: true});
 
+//index 생성 및 가중치 주
+productSchema.index({
+	title:'text',
+	description:'text',
+}, {
+	weights:{
+		title: 5,
+		description: 1
+	}
+});
+
 const Product = mongoose.model('Product', productSchema);
 
 module.exports = { Product };

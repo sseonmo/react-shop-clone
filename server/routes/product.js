@@ -44,6 +44,7 @@ router.post("/products", (req, res) => {
 
 	let skip = req.body.skip ? parseInt(req.body.skip) : 0;
 	let limit = req.body.limit ? parseInt(req.body.limit) : 20;
+	let term = req.body.searchTerm ? req.body.searchTerm : '';
 
 	// 컬럼명을 맞춰서 find args로 던지면.. find가 되네..
 	// req.body.filters = { continents: [1,3], price: [1,2,3,4,5] }
@@ -62,17 +63,39 @@ router.post("/products", (req, res) => {
 		}
 	}
 	console.log('findArgs', findArgs);
-	// product collection에 들어잇는 모든 상품 정보를 가져오기
-	// populate를 사용해서 ref에 해당 ObjectId가 속해있는 모델에 해당하는 값과 객체로 치환해주는 역할을 한다.
-	Product.find(findArgs)
-		.populate("writer")
-		.skip(skip)
-		.limit(limit)
-		.exec((err, productInfo) => {
-			if (err) res.status(400).json({success: false, err});
+	console.log('term', term);
 
-			res.status(200).json({success: true, productInfo, postSize: productInfo.length})
-		});
+	if (term) {
+
+		/* 검색
+		* db.users.find({name: /a/})  //like '%a%'
+		* db.users.find({name: /^pa/}) //like 'pa%'
+		* db.users.find({name: /ro$/}) //like '%ro'
+		* */
+		Product.find(findArgs)
+			.find({ $text: {$search: term}} )
+			// .find(  {title: {$regex: /term/}} )
+			.populate("writer")
+			.skip(skip)
+			.limit(limit)
+			.exec((err, productInfo) => {
+				if (err) res.status(400).json({success: false, err});
+				res.status(200).json({success: true, productInfo, postSize: productInfo.length})
+			});
+	} else {
+		// product collection에 들어잇는 모든 상품 정보를 가져오기
+		// populate를 사용해서 ref에 해당 ObjectId가 속해있는 모델에 해당하는 값과 객체로 치환해주는 역할을 한다.
+		Product.find(findArgs)
+			.populate("writer")
+			.skip(skip)
+			.limit(limit)
+			.exec((err, productInfo) => {
+				if (err) res.status(400).json({success: false, err});
+				res.status(200).json({success: true, productInfo, postSize: productInfo.length})
+			});
+	}
+
+
 });
 
 
