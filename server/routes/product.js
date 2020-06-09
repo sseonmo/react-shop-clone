@@ -62,8 +62,6 @@ router.post("/products", (req, res) => {
 			}
 		}
 	}
-	console.log('findArgs', findArgs);
-	console.log('term', term);
 
 	if (term) {
 
@@ -72,9 +70,13 @@ router.post("/products", (req, res) => {
 		* db.users.find({name: /^pa/}) //like 'pa%'
 		* db.users.find({name: /ro$/}) //like '%ro'
 		* */
+		// term = '/^'+term+'/i';
+		// console.log(term);
 		Product.find(findArgs)
-			.find({ $text: {$search: term}} )
-			// .find(  {title: {$regex: /term/}} )
+			// .find({ $text: {$search: term}} )
+			// .find({title: /`${term}`/})
+			.find({"title": {'$regex': term }})     // 쌍라이크
+			// .find({"title": {'$regex': new RegExp('^'+term, "i") }})
 			.populate("writer")
 			.skip(skip)
 			.limit(limit)
@@ -95,6 +97,21 @@ router.post("/products", (req, res) => {
 			});
 	}
 
+});
+
+
+router.get('/product_by_id', (req, res) => {
+
+	// productId 를 이용해서 DB에서 productId 에 맞는 상품을 가져온다.
+	let type = req.query.type;
+	let productId = req.query.id;
+
+	Product.find({_id: productId})
+		.populate('writer')
+		.exec( (err, product) => {
+			if(err) res.status(400).json({success: false, err});
+			res.status(200).json({success: true, product})
+		})
 
 });
 
