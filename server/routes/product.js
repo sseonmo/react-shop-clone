@@ -100,20 +100,31 @@ router.post("/products", (req, res) => {
 });
 
 
-router.get('/product_by_id', (req, res) => {
+router.get('/products_by_id', (req, res) => {
+
 
 	// productId 를 이용해서 DB에서 productId 에 맞는 상품을 가져온다.
 	let type = req.query.type;
-	let productId = req.query.id;
+	let productIds = req.query.id;
 
-	Product.find({_id: productId})
+	if (type === "array") {
+		/* id = 123123123,234234234,345345345 이거를
+		* productIds = ['123123123', '234234234', '345345345'] 이런식으로 바주기
+		* */
+		let ids = req.query.id.split(',');
+		productIds = ids.map( item => item);
+	}
+
+	Product.find({_id: {$in: productIds }})
 		.populate('writer')
 		.exec( (err, product) => {
 			if(err) res.status(400).json({success: false, err});
 			res.status(200).json({success: true, product})
-		})
+		});
 
 });
 
 
 module.exports = router;
+
+
