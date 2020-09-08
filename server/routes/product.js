@@ -75,7 +75,7 @@ router.post("/products", (req, res) => {
 		Product.find(findArgs)
 			// .find({ $text: {$search: term}} )
 			// .find({title: /`${term}`/})
-			.find({"title": {'$regex': term }})     // 쌍라이크
+			.find({"title": {'$regex': term}})     // 쌍라이크
 			// .find({"title": {'$regex': new RegExp('^'+term, "i") }})
 			.populate("writer")
 			.skip(skip)
@@ -112,14 +112,14 @@ router.get('/products_by_id', (req, res) => {
 		* productIds = ['123123123', '234234234', '345345345'] 이런식으로 바주기
 		* */
 		let ids = req.query.id.split(',');
-		productIds = ids.map( item => item);
+		productIds = ids.map(item => item);
 	}
 
-	Product.find({_id: {$in: productIds }})
+	Product.find({_id: {$in: productIds}})
 		.populate('writer')
-		.exec( (err, product) => {
-			if(err) res.status(400).json({success: false, err});
-			res.status(200).json({success: true, product})
+		.exec((err, product) => {
+			if (err) res.status(400).json({success: false, err});
+			res.status(200).send(product)
 		});
 
 });
