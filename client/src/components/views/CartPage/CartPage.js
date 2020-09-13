@@ -3,6 +3,7 @@ import {useDispatch} from "react-redux";
 import { getCartItems, removeCartItem} from "../../../_actions/user_actions";
 import UserCardBlock from "./Section/UserCardBlock"
 import { Empty } from 'antd';
+import Paypal from "../../utils/Paypal";
 
 function CartPage(props) {
 	const dispatch = useDispatch();
@@ -19,11 +20,13 @@ function CartPage(props) {
 				props.user.userData.cart.forEach( item => {
 					cartItems.push(item.id)
 				});
-
 				dispatch(getCartItems(cartItems, props.user.userData.cart))
 					.then(response => calculatetotal(response.payload));
+				setShowTotal(true);
 			}
-
+		}
+		else{
+			setShowTotal(false);
 		}
 	}, [props.user.userData]);
 
@@ -52,15 +55,19 @@ function CartPage(props) {
 				<UserCardBlock products={props.user.cartDetail} removeItem={removeFromCart}/>
 			</div>
 			{ShowTotal ?
+				<>
 				<div style={{marginTop: '3rem'}}>
 					<h2>Total Amount: {Total} 원</h2>
 				</div>
+				<Paypal total={Total}/>
+				</>
 				:
 				<>
 					<br/>
 					<Empty description={false}/>
 				</>
 			}
+
 		</div>
 	);
 }
